@@ -52,13 +52,18 @@
 // Tue 2025-06-25 Updated the manpage text with how to get out of help.                     Version: 00.23
 // Wed 2026-04-23 Swapping over to Samael framework, and rebuilding it because I found a    Version: 00.24
 //                 bug on the Windows side.
+// wed 2026-04-29 Outsourced everything to the project related header/source. Keeps main.c  Version: 00.25
+//                simple and only as entry point of the application.
+// Fri 2026-05-01 Implemented --version display, to be compatible with std UNIX tools.      Version: 00.26
 // -----------------------------------------------------------------------------------------------------
 // To Do's:
 // - Take cVersion.h & cVersion.c appart and integrate it directly into this code base.             Done.                             Done.
 // - Take cManPage.h & cManPage.c appart and integrate it directly into this code base.             Done.                             Done.
 // - Check file exists before version in doesFileExists().                                          Done.
 // - Make sure if the library string isn't in the end, the program doesn't crash.                   Done.
-// - Implement linker flags directive in the pmake file.
+// - Implement linker flags directive in the pmake file.                                            Done.
+// - Implement -DDEBUG flag through command shell parameter.                                        Done.
+// - Implement --version UNIX compliant.                                                            Done.
 // *****************************************************************************************************/
 
 // Standard C headers — the foundations we all lean on. These handle essential tasks like printing to
@@ -81,115 +86,6 @@
 // isn’t left guessing. These aren’t just utilities — they’re the behaviors that make `pmake` act like
 // a tool, not just a compiled blob.
 #include "pmake.h"
-#include "parse.h"
-#include "version.h"
-
-// -------------------------------------------------------------------------------------------
-// manpage_display
-//
-// Builds and displays the application's integrated manpage. This function assembles all
-// sections—name, synopsis, description, options, and license—into a complete help page and
-// delegates the final rendering to manpage_init(). The content is constructed dynamically
-// using append_format(), which keeps the layout flexible and easy to maintain.
-//
-// The design mirrors the UNIX manpage structure so developers and system administrators feel
-// immediately at home. This function is only invoked when help flags are detected, and its
-// output replaces normal program execution.
-//
-// @note Memory for all dynamically built sections is allocated here and freed before return.
-// -------------------------------------------------------------------------------------------
-void manpage_display() {
-    
-//    log_info("Assembling and displaying the manpage content.");
-//    debug_info("Assembling and displaying the manpage content.");
-    
-    int major = MAJOR;
-//    log_info("Setting major version to %02d.", major);
-//    debug_info("Setting major version to %02d.", major);
-    
-    int minor = MINOR;
-//    log_info("Setting minor version to %02d.", minor);
-//    debug_info("Setting minor version to %02d.", minor);
-
-    // Define the filename of the manpage content
-    char *name = NULL;
-//    log_info("Setting application name to NULL.");
-//    debug_info("Setting application name to NULL.");
-
-    append_format(&name, APP_NAME);
-//    log_verbose("Appended application name: %s.", name);
-//    debug_info("Appended application name: %s.", name);
-
-    char *synopsis = NULL;
-//    log_info("Setting synopsis to NULL.");
-//    debug_info("Setting synopsis to NULL.");
-
-    append_format(&synopsis, "      treeclone [-exclude] [-h | -H | -help | -Help | -(\\)?]");
-//    log_info("Building synopsis: treeclone [-exclude] [-h | -H | -help | -Help | -(\\)?]");
-//    debug_info("Building synopsis: treeclone [-exclude] [-h | -H | -help | -Help | -(\\)?]");
-
-    char *description = NULL;
-//    log_info("Setting description to NULL.");
-//    debug_info("Setting description to NULL.");
-
-    append_format(&description, "      treeclone - as the name suggests, this is a simple clone of the CLI tree.\n");
-//    log_info("Built description content.");
-//    debug_info("Built description content.");
-
-    char *options = NULL;
-//    log_info("Setting options to NULL.");
-//    debug_info("Setting options to NULL");
-
-    append_format(&options, "      -exclude \"*.tmp, .git/, tmp/\"\n");
-    append_format(&options, "      Any folder or file, one time or reoccuring you define after the -exclude\n");
-    append_format(&options, "      flag in a comma seperated string will be extracted from the tree.\n");
-    append_format(&options, "\n");
-    append_format(&options, "      -h, -H, -help, -Help, -(\\)?\n");
-    append_format(&options, "      Do you need help? Any of these flags will open the application's manpage.\n");
-    append_format(&options, "      This UNIX-style help file, familiar to developers and system administrators,\n");
-    append_format(&options, "      is integrated into helloc itself. The beauty of this approach is that anyone\n");
-    append_format(&options, "      working on macOS, BSD, UNIX, or Linux will instantly feel at home with the layout.\n");
-    append_format(&options, "      Think of it as your built-in guide whenever you need more insight into the\n");
-    append_format(&options, "      program helloc.\n");
-//    log_info("Built options content.");
-//    debug_info("Built options content.");
-
-    char *license = NULL;
-//    log_info("Setting license to NULL.");
-//    debug_info("Setting license to NULL.");
-
-    append_format(&license, "      Copyright 2024 Free Software Foundation, Inc. License GPLv3+: GNU GPL version 3\n");
-    append_format(&license, "      or later <https://gnu.org/licenses/gpl.html>. This is free software: you are free\n");
-    append_format(&license, "      to change and redistribute it. There is NO WARRANTY, to the extent permitted by law.\n");
-//    log_info("Built license content.");
-//    debug_info("Built license content.");
-
-    // Create the manpage in the file
-//    log_info("Initializing manpage with assembled content.");
-//    debug_info("Initializing manpage with assembled content.");
-    manpage_init(major, minor, name, synopsis, description, options, license);
-
-    // Free up the memory.
-    free(name);             
-//    log_info("Freed memory allocated for name.");
-//    debug_info("Freed memory allocated for name.");
-    
-    free(synopsis);         
-//    log_info("Freed memory allocated for synopsis.");
-//    debug_info("Freed memory allocated for synopsis.");
-
-    free(description);      
-//    log_info("Freed memory allocated for description.");
-//    debug_info("Freed memory allocated for description.");
-
-    free(options);          
-//    log_info("Freed memory allocated for options.");
-//    debug_info("Freed memory allocated for options.");
-
-    free(license);          
-//    log_info("Freed memory allocated for license.");
-//    debug_info("Freed memory allocated for license.");
-}
 
 // -----------------------------------------------------------------------------------------------------
 // int main(int argc, char **argv) - This is where execution begins. The main-function serves as the
@@ -206,11 +102,6 @@ void manpage_display() {
 // @return      EXIT_SUCCESS on successful completion, EXIT_FAILURE if something goes wrong
 // -----------------------------------------------------------------------------------------------------
 int main(int argc, char **argv) {
-
-    // Create a version struct with major and minor numbers. I use the major number to signal builds or
-    // cohesive releases, and the minor to track internal advancements — bugfixes, new features, or
-    // meaningful changes since the file was created. The numbers evolve, but the structure stays the same.
-    // Version v = create_version(0, 23);
     
     // If no arguments were provided, or the user asked for help explicitly, print the help text and exit
     // cleanly. A program that can’t explain itself isn’t ready to be used — this one does, and it does
@@ -222,15 +113,12 @@ int main(int argc, char **argv) {
         return EXIT_SUCCESS;
     }
 
-    // Check if the user explicitly asked for the version number. If so, convert the version struct to
-    // a string and print it out. No mystery, no verbosity — just the program telling you exactly where
-    // it stands.
-//    if (argc > 1 && strcmp(argv[1], "--version") == 0) {
-//        char buf[8];
-//        to_string(v, buf);
-//        printf("pmake version %s\n", buf);
-//        return EXIT_SUCCESS;
-//    }
+    // After checking if the help or "manpage" is called, the next UNIX compliant standard is to check for
+    // --version flag. If the user asks for the version of the application. Display the component meta data.
+    if (argc > 1 && strcmp(argv[1], "--version") == 0) {
+        component_display();
+        return EXIT_SUCCESS;
+    }
 
     // In case something goes wrong, the error message is stored here.
     char *errmsg = NULL;
@@ -244,7 +132,25 @@ int main(int argc, char **argv) {
     // This returns a Makefile pointer with all relevant fields filled out — or
     // sets `errmsg` if something goes wrong before we can proceed.
     Makefile *mf = parse(filename, &errmsg);
-    
+ 
+    // Remove any occurrence of "-DDEBUG" from the pmakefile flags. The pmakefile
+    // must never influence whether the build is a debug or release build; that
+    // decision is controlled exclusively through the command line. This ensures
+    // predictable behavior and prevents accidental debug builds caused by stale
+    // configuration entries.
+    char *clean_flags = strip_debug_flag(mf->flags);
+    free(mf->flags);
+    mf->flags = clean_flags;
+
+    // Detect whether the user explicitly passed "-DDEBUG" on the command line.
+    // Only an exact, case-sensitive match enables debug mode. This ensures that
+    // debug builds are always intentional and never influenced by the pmakefile.
+    for (int i = 2; i < argc; i++) {
+        if (strcmp(argv[i], "-DDEBUG") == 0) {
+            debug_from_cli = 1;
+        }
+    }
+
     // Debugging output to help understand what the program is doing. This is useful during development.
     // Debug outputs can be turned on with the `-DDEBUG` flag during compilation.
     debug_info("comp    = '%s'\n", mf->comp);
