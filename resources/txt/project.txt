@@ -1,0 +1,22 @@
+## About
+
+pmake is a small, personal build tool I wrote to automate the repetitive parts of compiling. It
+isn’t meant to replace make, cmake, or any of the industrial‑strength build systems out there.
+It’s just a lightweight helper that fits the way I work: simple commands, predictable behavior,
+and no hidden magic.
+
+The tool handles the basics — compiling sources while keeping project structure consistent.
+It’s intentionally minimal, because that’s all I need for the kind of projects I build in
+my spare time.
+
+## Why This Exists
+
+I got tired of melting my brain just to write a Makefile. For small C projects, it makes no sense
+that I should have to debug a build script that’s supposed to tell the compiler how to build my code.
+Makefiles are powerful, but they’re also cryptic, inconsistent, and full of hidden behavior. One
+wrong tab and the whole thing falls apart.
+
+pmake (Patrik Make) exists because I wanted the opposite of that.
+
+A pmake file is not a scripting language. It has no logic, no recursion, no conditionals, no magic.
+It’s literally just compiler instructions in config‑file form: key=value. Simple, and self-explanatory.
