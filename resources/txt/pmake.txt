@@ -1,0 +1,32 @@
+██████╗  ███╗   ███╗ █████╗ ██╗  ██╗███████╗
+██╔══██╗ ████╗ ████║██╔══██╗██║ ██╔╝██╔════╝
+██████╔╝ ██╔████╔██║███████║█████╔╝ █████╗  
+██╔═══╝  ██║╚██╔╝██║██╔══██║██╔═██╗ ██╔══╝  
+██║      ██║ ╚═╝ ██║██║  ██║██║  ██╗███████╗
+╚═╝      ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝
+
+pmake - the no bullshit make tool for C/C++ developers
+------------------------------------------------------
+
+Aren’t you tired? First you learn a new language, then you learn how to compile the
+code by hand, and right when you finally understand the toolchain, you’re expected
+to master a build system that behaves like a strange hybrid of shell script, batch
+script, and configuration file all mashed together. If that’s your reality, then
+welcome to pmake.
+
+A pmake‑makefile is just a plain configuration file. It reads like straightforward
+instructions in a simple key=value format that tells the compiler exactly what to
+do to produce binaries and executables. There’s no scripting layer, no hidden logic,
+and no “magic” behavior waiting to surprise you. It’s direct, predictable, and easy
+to reason about.
+
+pmake has a flat learning curve because it doesn’t try to be clever. It’s easy to
+understand. It’s open source under the GNU Public License, and you’re encouraged to
+clone the project, read it, change it, break it, fix it, and make it yours.
+
+Once you internalize how effortless pmake is to use, you’ll wonder why you ever put
+up with Make or CMake. I’m confident about that — because pmake doesn’t fight you.
+It just builds.
+
+Best Regards,
+The developer - Patrik Eigenmann
