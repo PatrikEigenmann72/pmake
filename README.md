@@ -37,7 +37,16 @@ pmake/
 │   ├── samael.huginandmunin.debug.h
 │   └── samael.huginandmunin.log.h
 ├── resources/
+│   ├── doc/
+│   │   └── pmake.docx
+│   ├── pages/
+│   │   └── pmake.pages
+│   ├── pdf/
+│   │   └── pmake.pdf
+│   ├── pmake/
+│   │   └── example.pmake
 │   └── txt/
+│   │   ├── pmake.txt
 │   │   └── project.txt
 ├── scripts/
 │   ├── compile.bat
@@ -62,7 +71,9 @@ pmake/
 │   ├── samael.alchemy.stringutility.c
 │   ├── samael.chronicle.config.c
 │   └── samael.huginandmunin.log.c
+├── .gitignore
 ├── LICENSE
+├── README.md
 └── pmake.pmake
 ```
 
@@ -74,4 +85,4 @@ If you want to support my work, you can send a donation to p.eigenmann@gmx.net v
 Everything I publish is free under the GNU Public License v3.0. Use it, modify it, break it, rebuild it — whatever helps you learn or solve your own problems.
 
 ## Last Updated
-Sat 2026-05-02
+Thu 2026-06-18
