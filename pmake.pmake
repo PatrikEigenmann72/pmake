@@ -15,6 +15,7 @@
 # Sun 2024-11-17 Changed the configuration to fit the project.                      Version: 00.02
 # Sun 2025-06-22 Changed the make file into {project.pmake}.                        Version: 00.03
 # Sun 2025-06-22 Included both Unix and Windows paths.                              Version: 00.04
+# Wed 2026-06-17 Added the no-unknown-pragmas flag to disable warnings.             Version: 00.05
 # ------------------------------------------------------------------------------------------------
 
 # The compiler used for compiling the project is essential. Commonly, GCC is employed for Windows
@@ -31,7 +32,7 @@ comp=clang
 # potential errors during compilation. While optional, using the right flags is crucial for
 # consistency and reproducibility in the build process.
 # UNIX: -I./inlude, Windows: -I./include
-flags=-Wall -Wextra -I./include -DDEBUG
+flags=-Wall -Wextra -Wno-unknown-pragmas -I./include
 
 # If the project necessitates specific compiler flags for compilation, these should be meticulously
 # specified to ensure precise and efficient code compilation. Compiler flags play a crucial role in
