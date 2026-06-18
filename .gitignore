@@ -1,0 +1,57 @@
+# General Java & C Project git hygiene: Ignore transient build artifacts, local binaries,
+# and dev metadata. External libraries (even custom ones) live in /lib and are tracked
+# intentionally.
+
+# IDE metadata
+.vscode/
+.idea/
+.vs/
+
+# Editor swap/backup files (Vim, Nano, Emacs)
+*.swp
+*.swo
+*.swx
+*.un~
+*.undo
+*.bak
+*.orig
+*.save
+*~
+
+# Build output directories
+build/
+bin/
+
+# Compiled binaries (C/C++/ObjC)
+*.o
+*.obj
+*.so
+*.dll
+*.dylib
+*.a
+*.lib
+*.exe
+*.out
+
+# Java class files
+*.class
+
+# macOS metadata
+.DS_Store
+
+# Windows metadata
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Windows installers and crash dumps
+*.msi
+*.msix
+*.msm
+*.msp
+*.stackdump
+
+# Project-specific helper files
+sources.txt
