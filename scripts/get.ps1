@@ -13,6 +13,7 @@
 # Fri 2024-06-04 Script created.                                           Version: 00.01
 # Fri 2026-05-01 Script header added and script-family logic integrated.   Version: 00.02
 # Thu 2026-06-18 Changed to soft path.					                   Version: 00.03
+# Fri 2026-06-19 Bugfix: Function call corrected.                          Version: 00.04
 # ----------------------------------------------------------------------------------------
 
 param(
@@ -76,7 +77,7 @@ switch -regex ($Component) {
     ".*\.(sh|ps1|bat)$" {
         $file = Split-Path $Component -Leaf
         $base = $file -replace "\.[^.]+$",""
-        CopyScriptFamily $base
+        Copy-ScriptFamily $base
     }
 
     default {
@@ -96,6 +97,6 @@ switch -regex ($Component) {
             Write-Host "Copied $base.h to $DestInc/"
         }
 
-        CopyScriptFamily $base
+        Copy-ScriptFamily $base
     }
 }
