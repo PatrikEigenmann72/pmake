@@ -91,7 +91,7 @@ switch -regex ($Component) {
         }
 
         $hdr = "$Template/$DestInc/$base.h"
-        if (Test-Path $hdr) {
+        if (Test-Path $hgetdr) {
             if (-not (Test-Path $DestInc)) { New-Item -ItemType Directory -Path $DestInc | Out-Null }
             Copy-Item $hdr $DestInc
             Write-Host "Copied $base.h to $DestInc/"
