@@ -16,6 +16,7 @@
 # Sun 2025-06-22 Changed the make file into {project.pmake}.                        Version: 00.03
 # Sun 2025-06-22 Included both Unix and Windows paths.                              Version: 00.04
 # Wed 2026-06-17 Added the no-unknown-pragmas flag to disable warnings.             Version: 00.05
+# Thu 2026-06-18 Added the math library (Linux requeres it, others don't).          Version: 00.06
 # ------------------------------------------------------------------------------------------------
 
 # The compiler used for compiling the project is essential. Commonly, GCC is employed for Windows
@@ -65,4 +66,4 @@ src=./src/*.c
 # to guarantee successful compilation and linking of the project.
 # libs=-lncurses -lmarkdown -lsamael
 # libs=./src/manpage.c ./src/parse.c ./src/version.c
-libs=
+libs=-lm

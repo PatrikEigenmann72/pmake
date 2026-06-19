@@ -14,6 +14,7 @@
 // Tue 2026-01-13 Corrected log_get_timestamp to match Java applications.       Version: 00.02
 // Sat 2026-01-24 Added sophisticated comments and documentation.               Version: 00.03
 // Sat 2026-01-24 Added #pragma regions for better code organization.           Version: 00.04
+// Sat 2026-03-28 Cleared up wrong code for Linux.                              Version: 00.05
 // -------------------------------------------------------------------------------------------
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,12 +25,17 @@
 #include "samael.huginandmunin.log.h"
 
 #ifdef _WIN32
-#include <windows.h>
+    #include <windows.h>
+    #include <shlobj.h>
 #else
-#include <libgen.h>
-#include <unistd.h>
-#include <mach-o/dyld.h>
-#include <sys/time.h>
+    #include <sys/time.h>
+    #include <stdint.h>
+    #include <libgen.h>
+    #include <unistd.h>
+    #include <limits.h>
+    #if defined(__APPLE__)
+        #include <mach-o/dyld.h>
+    #endif
 #endif
 
 #pragma region Internal Definitions
@@ -172,7 +178,7 @@ static const char* log_get_timestamp(void) {
     gettimeofday(&tv, NULL);
     struct tm* t = localtime(&tv.tv_sec);
     snprintf(buffer, sizeof(buffer),
-             "%02d:%02d:%02d.%03d",
+             "%02d:%02d:%02d.%03ld",
              t->tm_hour, t->tm_min, t->tm_sec, tv.tv_usec / 1000);
 #endif
 
@@ -196,6 +202,7 @@ static const char* log_get_timestamp(void) {
 // -------------------------------------------------------------------------------------------
 static const char* log_get_filename(void) {
     static char path[512];
+
 #ifdef _WIN32
     char exeName[MAX_PATH];
     GetModuleFileNameA(NULL, exeName, sizeof(exeName));
@@ -205,18 +212,34 @@ static const char* log_get_filename(void) {
     const char* home = getenv("USERPROFILE");
     if (!home) home = ".";
     snprintf(path, sizeof(path), "%s\\Documents\\Logs\\%s.log", home, exeBase);
+
 #else
-    char exeName[1024];
-    uint32_t size = sizeof(exeName);
-    if (_NSGetExecutablePath(exeName, &size) != 0) {
+    char exeName[PATH_MAX];
+
+    #if defined(__APPLE__)
+        uint32_t size = (uint32_t)sizeof(exeName);
+        if (_NSGetExecutablePath(exeName, &size) != 0) {
+            strcpy(exeName, "unknown");
+        }
+    #elif defined(__linux__)
+        ssize_t len = readlink("/proc/self/exe", exeName, sizeof(exeName) - 1);
+        if (len != -1) {
+            exeName[len] = '\0';
+        } else {
+            strcpy(exeName, "unknown");
+        }
+    #else
         strcpy(exeName, "unknown");
-    }
+    #endif
+
     const char* exeBase = basename(exeName);
 
     const char* home = getenv("HOME");
     if (!home) home = ".";
     snprintf(path, sizeof(path), "%s/Documents/Logs/%s.log", home, exeBase);
 #endif
+
     return path;
 }
+
 #pragma endregion

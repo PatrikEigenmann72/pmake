@@ -12,6 +12,7 @@ REM ----------------------------------------------------------------------------
 REM Change Log:
 REM Fri 2024-06-04 Script created.                                             Version: 00.01
 REM Fri 2026-05-01 Script header added and script-family logic integrated.     Version: 00.02
+REM Thu 2026-06-18 Switched to relative path.				       Version: 00.03
 REM ----------------------------------------------------------------------------------------
 
 if "%~1"=="" (
@@ -20,7 +21,7 @@ if "%~1"=="" (
 )
 
 set COMPONENT=%~1
-set TEMPLATE=C:\Users\peige\Development\cpp\helloc
+set TEMPLATE=..\helloc
 set DEST_SRC=src
 set DEST_INC=include
 set DEST_SCR=scripts
