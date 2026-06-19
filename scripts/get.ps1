@@ -74,7 +74,7 @@ switch -regex ($Component) {
         }
     }
 
-    ".*\.(sh|ps1|bat)$" {
+    ".*\.(sh|ps1|bat|cmd)$" {
         $file = Split-Path $Component -Leaf
         $base = $file -replace "\.[^.]+$",""
         Copy-ScriptFamily $base

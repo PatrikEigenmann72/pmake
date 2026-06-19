@@ -11,6 +11,7 @@
 # Thu 2025-08-14 File created and content added.                        Version: 00.01
 # Thu 2026-04-30 Updated to remove compilation logic.                   Version: 00.02
 # Thu 2026-04-30 Added manpage-style help section.                      Version: 00.03
+# Fri 2026-06-19 Bugfix: Windows OS uses ending .exe for binaries.      Version: 00.04
 # ------------------------------------------------------------------------------------
 
 param(
@@ -46,7 +47,7 @@ if ($Flag -in @("-h", "-help", "-?")) {
 
 # Extract project name from current directory
 $projectName = Split-Path -Leaf (Get-Location)
-$binary = ".\bin\$projectName"
+$binary = ".\bin\$projectName.exe"
 
 Write-Host "Installing $projectName..."
 

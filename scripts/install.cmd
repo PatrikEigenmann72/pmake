@@ -10,19 +10,20 @@
 :: ------------------------------------------------------------------------------------
 :: Change Log:
 :: Thu 2026-04-30 File created and content added.                        Version: 00.01
+:: Fri 2026-06-19 Bugfix: Windows OS uses ending .exe for binaries.      Version: 00.02
 :: ------------------------------------------------------------------------------------
 
 :: Extract project name from current directory
 set PROJECT=%CD%
 for %%I in ("%PROJECT%") do set PROJECT=%%~nI
 
-set BINARY=bin\%PROJECT%
+set BINARY=bin\%PROJECT%.exe
 
 echo Installing %PROJECT%...
 
 if not exist "%BINARY%" (
     echo Error: Binary "%BINARY%" does not exist.
-    echo Run "compile.bat" first.
+    echo Run "compile.cmd" first.
     exit /b 1
 )
 
