@@ -10,9 +10,9 @@
 # GitHub:       https://github.com/PatrikEigenmann72/scripts.git
 # ----------------------------------------------------------------------------------------
 # Change Log:
-# Fri 2024-06-04 Script created.                                             Version: 00.01
-# Fri 2026-05-01 Script header added and script-family logic integrated.     Version: 00.02
-# Thu 2026-06-18 Switched to relative path.				     Version: 00.03
+# Fri 2024-06-04 Script created.                                           Version: 00.01
+# Fri 2026-05-01 Script header added and script-family logic integrated.   Version: 00.02
+# Thu 2026-06-18 Changed to soft path.					                   Version: 00.03
 # ----------------------------------------------------------------------------------------
 
 param(
@@ -28,7 +28,7 @@ $DestScr  = "scripts"
 function Copy-ScriptFamily {
     param([string]$Base)
 
-    foreach ($ext in @("sh", "ps1", "bat")) {
+    foreach ($ext in @("sh", "ps1", "bat", "cmd")) {
         $src = "$Template/$DestScr/$Base.$ext"
         if (Test-Path $src) {
             if (-not (Test-Path $DestScr)) { New-Item -ItemType Directory -Path $DestScr | Out-Null }

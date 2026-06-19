@@ -1,6 +1,6 @@
 @echo off
 REM ----------------------------------------------------------------------------------------
-REM Script:       get.bat
+REM Script:       get.cmd
 REM Description:  Fetches components from the template project into the active project.
 REM               Supports C source/header files and script families (.sh/.ps1/.bat).
 REM               Used to pull new or updated components intentionally and explicitly.
@@ -10,13 +10,13 @@ REM eMail:        p.eigenmann72@gmail.com
 REM GitHub:       https://github.com/PatrikEigenmann72/scripts.git
 REM ----------------------------------------------------------------------------------------
 REM Change Log:
-REM Fri 2024-06-04 Script created.                                             Version: 00.01
-REM Fri 2026-05-01 Script header added and script-family logic integrated.     Version: 00.02
-REM Thu 2026-06-18 Switched to relative path.				       Version: 00.03
+REM Fri 2024-06-04 Script created.                                           Version: 00.01
+REM Fri 2026-05-01 Script header added and script-family logic integrated.   Version: 00.02
+REM Thu 2026-06-18 Changed to soft path.				                     Version: 00.03
 REM ----------------------------------------------------------------------------------------
 
 if "%~1"=="" (
-    echo Usage: get.bat COMPONENT
+    echo Usage: get.cmd COMPONENT
     exit /b 1
 )
 
@@ -35,7 +35,7 @@ for %%F in ("%COMPONENT%") do (
 
 REM Copy script family
 :copy_scripts
-for %%E in (.sh .ps1 .bat) do (
+for %%E in (.sh .ps1 .bat .cmd) do (
     if exist "%TEMPLATE%\%DEST_SCR%\%BASE%%%E" (
         if not exist "%DEST_SCR%" mkdir "%DEST_SCR%"
         copy "%TEMPLATE%\%DEST_SCR%\%BASE%%%E" "%DEST_SCR%" >nul
@@ -78,6 +78,7 @@ REM Handle script extensions
 if /i "%EXT%"==".sh"  goto copy_scripts
 if /i "%EXT%"==".ps1" goto copy_scripts
 if /i "%EXT%"==".bat" goto copy_scripts
+if /i "%EXT%"==".cmd" goto copy_scripts
 
 REM Base name: copy .c, .h, and script family
 if exist "%TEMPLATE%\%DEST_SRC%\%BASE%.c" (

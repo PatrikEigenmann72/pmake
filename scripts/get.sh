@@ -10,9 +10,9 @@
 # GitHub:       https://github.com/PatrikEigenmann72/scripts.git
 # ----------------------------------------------------------------------------------------
 # Change Log:
-# Fri 2024-06-04 Script created.                                             Version: 00.01
-# Fri 2026-05-01 Script header added and script-family logic integrated.     Version: 00.02
-# Thu 2026-06-18 Switched to relative path.				     Version: 00.03
+# Fri 2024-06-04 Script created.                                           Version: 00.01
+# Fri 2026-05-01 Script header added and script-family logic integrated.   Version: 00.02
+# Thu 2026-06-18 Changed to soft path.					                   Version: 00.03
 # ----------------------------------------------------------------------------------------
 
 show_help() {
@@ -75,6 +75,12 @@ copy_script_family() {
         mkdir -p "$DEST_SCR"
         cp "$TEMPLATE/$DEST_SCR/$BASE.bat" "$DEST_SCR/"
         echo "Copied $BASE.bat to $DEST_SCR/"
+    fi
+    # .cmd
+    if [[ -f "$TEMPLATE/$DEST_SCR/$BASE.cmd" ]]; then
+        mkdir -p "$DEST_SCR"
+        cp "$TEMPLATE/$DEST_SCR/$BASE.cmd" "$DEST_SCR/"
+        echo "Copied $BASE.cmd to $DEST_SCR/"
     fi
 }
 
