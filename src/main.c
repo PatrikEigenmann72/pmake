@@ -55,6 +55,7 @@
 // wed 2026-04-29 Outsourced everything to the project related header/source. Keeps main.c  Version: 00.25
 //                simple and only as entry point of the application.
 // Fri 2026-05-01 Implemented --version display, to be compatible with std UNIX tools.      Version: 00.26
+// Sun 2026-06-21 Enable UTF-8 support for windows console.                                 Version: 00.27
 // -----------------------------------------------------------------------------------------------------
 // To Do's:
 // - Take cVersion.h & cVersion.c appart and integrate it directly into this code base.             Done.                             Done.
@@ -103,6 +104,8 @@
 // -----------------------------------------------------------------------------------------------------
 int main(int argc, char **argv) {
     
+    setConsoleUTF8(); // Enable UTF-8 support for Windows console.
+
     // If no arguments were provided, or the user asked for help explicitly, print the help text and exit
     // cleanly. A program that can’t explain itself isn’t ready to be used — this one does, and it does
     // so without assuming you already know what you’re doing.

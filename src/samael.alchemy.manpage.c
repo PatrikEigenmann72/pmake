@@ -31,6 +31,7 @@
 // Thu 2025-12-11 Added private helper static void manpage_write.                   Version: 00.10
 // Thu 2025-12-11 Added private helper static char *manpage_explode.                Version: 00.11
 // Thu 2025-12-11 Added private helper static void manpage_free.                    Version: 00.12
+// Sun 2026-06-21 Enable UTF-8 support for windows console.                         Version: 00.13
 // -----------------------------------------------------------------------------------------------
 // Include standard headers.
 #include <stdio.h>
@@ -65,6 +66,7 @@
 // ----------------------------------------------------------------------------------------------
 #ifdef _WIN32
     #include <io.h>
+    #include <windows.h>
     #define _home() getenv("USERPROFILE")
     char command[255] = "more ";
     char *PATH = "\\AppData\\Local\\man\\";
@@ -202,6 +204,20 @@ int manpage_is_help_triggered(int argcIn, char *argvIn[]){
     }
 
     return 0; // no help flag present
+}
+
+void setConsoleUTF8() {
+    #ifdef _WIN32
+        // SetConsoleOutputCP(CP_UTF8) forces the Windows console to interpret all stdout
+        // bytes as UTF‑8. Without this call, UTF‑8 line‑drawing characters are decoded
+        // using a legacy code page, producing mojibake.
+        SetConsoleOutputCP(CP_UTF8);
+
+        // SetConsoleCP(CP_UTF8) sets the console input code page to UTF‑8 so that any
+        // user-provided input is read correctly. This keeps input and output encoding
+        // consistent across the application.
+        SetConsoleCP(CP_UTF8);
+    #endif
 }
 
 /* ---------- Private Functions (static functions for internal usage only) --------------- */

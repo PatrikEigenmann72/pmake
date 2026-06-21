@@ -9,12 +9,13 @@
 # GitHub:       https://github.com/PatrikEigenmann72/Scripts
 # ------------------------------------------------------------------------------------
 # Change Log:
-# Thu 2025-08-14 File created and content added.                        Version: 00.01
+# Thu 2025-08-14 File created and content added.                       Version: 00.01
 # Thu 2026-04-30 Updated to use pmake and unified debug flag.          Version: 00.02
 # Thu 2026-04-30 Added manpage-style help section.                     Version: 00.03
 # ------------------------------------------------------------------------------------
 
 param(
+    [Parameter(ValueFromRemainingArguments = $true)]
     [string]$Flag
 )
 
@@ -48,6 +49,12 @@ if ($Flag -in @("-h", "-help", "-?")) {
 
 # Extract project name from current directory
 $projectName = Split-Path -Leaf (Get-Location)
+
+# Ensure bin folder exists
+if (-not (Test-Path "bin")) {
+    Write-Host "Creating the bin folder..."
+    New-Item -ItemType Directory -Path "bin" | Out-Null
+}
 
 Write-Host "Building $projectName..."
 

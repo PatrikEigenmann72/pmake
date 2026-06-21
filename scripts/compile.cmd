@@ -1,6 +1,6 @@
 @echo off
 :: ------------------------------------------------------------------------------------
-:: Script:       compile.bat
+:: Script:       compile.cmd
 :: Description:  A simple build script for C projects. It calls pmake using the
 ::               active directory name as the project name and forwards -DDEBUG
 ::               when requested.
@@ -16,6 +16,12 @@
 :: Extract project name from current directory
 set PROJECT=%CD%
 for %%I in ("%PROJECT%") do set PROJECT=%%~nI
+
+:: Ensure bin folder exists
+if not exist bin (
+    echo Creating the bin folder...
+    mkdir bin
+)
 
 echo Building %PROJECT%...
 

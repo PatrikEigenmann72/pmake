@@ -29,6 +29,7 @@
 // Thu 2025-12-11 Privatized manpage_write and manpage_free in .c file.             Version: 00.08
 // Thu 2025-12-11 Simplified manpage_init to void, handled internally.              Version: 00.09
 // Thu 2025-12-11 Updated manpage_is_help_triggered to accept help flags anywhere.  Version: 00.10
+// Sun 2026-06-21 Enable UTF-8 support for windows console.                         Version: 00.11 
 // -----------------------------------------------------------------------------------------------
 #ifndef SAMAEL_ALCHEMY_MANPAGE_H
 #define SAMAEL_ALCHEMY_MANPAGE_H
@@ -97,4 +98,14 @@ int manpage_is_help_triggered(int argcIn, char *argvIn[]);
 // while the application provides the details.
 // ---------------------------------------------------------------------------------------
 extern void manpage_display();
+
+// ---------------------------------------------------------------------------------------
+// setConsoleUTF8 - This function enables UTF-8 support in the Windows console. It ensures
+// that all input and output is correctly encoded, allowing for proper display of special
+// characters and consistent behavior across platforms. Without this, UTF-8 characters
+// may appear as garbled text also called mojibake. All other platforms support UTF-8,
+// therefore will ignore this function.
+// ---------------------------------------------------------------------------------------
+void setConsoleUTF8();
+
 #endif
