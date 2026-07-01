@@ -17,7 +17,12 @@
 # Sun 2025-06-22 Included both Unix and Windows paths.                              Version: 00.04
 # Wed 2026-06-17 Added the no-unknown-pragmas flag to disable warnings.             Version: 00.05
 # Thu 2026-06-18 Added the math library (Linux requeres it, others don't).          Version: 00.06
+# Tue 2026-06-30 Added OS-Gnosticism.                                               Version: 00.07
 # ------------------------------------------------------------------------------------------------
+
+# The flag is_os_gnostic can be turned on with on/1 or off with off/0. This flag makes the pmake
+# file Operating System Gnostic. OS-Gnosticism it relevant if you develop cross-platform software.
+is_os_gnostic=on
 
 # The compiler used for compiling the project is essential. Commonly, GCC is employed for Windows
 # due to its robustness and prevalence in open-source development. On MacOS, Clang is preferred

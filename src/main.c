@@ -58,13 +58,15 @@
 // Sun 2026-06-21 Enable UTF-8 support for windows console.                                 Version: 00.27
 // -----------------------------------------------------------------------------------------------------
 // To Do's:
-// - Take cVersion.h & cVersion.c appart and integrate it directly into this code base.             Done.                             Done.
-// - Take cManPage.h & cManPage.c appart and integrate it directly into this code base.             Done.                             Done.
+// - Take cVersion.h & cVersion.c appart and integrate it directly into this code base.             Done.
+// - Take cManPage.h & cManPage.c appart and integrate it directly into this code base.             Done.
 // - Check file exists before version in doesFileExists().                                          Done.
 // - Make sure if the library string isn't in the end, the program doesn't crash.                   Done.
 // - Implement linker flags directive in the pmake file.                                            Done.
 // - Implement -DDEBUG flag through command shell parameter.                                        Done.
 // - Implement --version UNIX compliant.                                                            Done.
+// - Implement os gnosticism to build the correct binary name for the target OS.                    Done.
+// - Implement version number in the binary name.                                                   Done.
 // *****************************************************************************************************/
 
 // Standard C headers — the foundations we all lean on. These handle essential tasks like printing to

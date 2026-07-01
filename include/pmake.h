@@ -23,6 +23,7 @@
 // Wed 2026-04-29 Added methods display_manpage.                                    Version: 00.02
 // Wed 2026-04-29 Added functionallity from parse.c and removed version.c.          Version: 00.03
 // Fri 2026-05-01 Switched globals to preprocessor constants for immutability.      Version: 00.04
+// Tue 2026-06-30 Integrating OS gnosticism.                                        Version: 00.05
 // ------------------------------------------------------------------------------------------------
 #ifndef PMAKE_H
 #define PMAKE_H
@@ -45,6 +46,7 @@ typedef struct {
     char *bin;
     char *src;
     char *libs;
+    char *os_gnostic; // Optional field for OS-specific directives.
 } Makefile;
 
 // --------------------------------------------------------------------------------

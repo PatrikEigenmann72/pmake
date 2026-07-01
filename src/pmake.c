@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------------------------
-// pmake.h - `pmake` isn’t here to replace your entire toolchain or teach you a new language. It
+// pmake.c - `pmake` isn’t here to replace your entire toolchain or teach you a new language. It
 // exists because somewhere along the way, compiling a few lines of C code turned into a ceremony
 // — full of build scripts that felt like mini-programs, declarations inside declarations, and
 // files that read more like puzzles than instructions. Make is clever, maybe too clever. CMake
@@ -25,6 +25,10 @@
 // Fri 2026-05-01 Cleaned up the display_manpage and made it more consice.          Version: 00.04
 // Fri 2026-05-01 Switched globals to preprocessor constants for immutability.      Version: 00.05
 // Fri 2026-05-01 Refactored manpage_display to reflect the current state.          Version: 00.06
+// Tue 2026-06-30 Integrating OS gnosticism.                                        Version: 00.07
+// Tue 2026-06-30 Adding the version number to the binary name.                     Version: 00.08
+// Tue 2026-06-30 If pmake is os gnostic, adding the OS name to the binary name.    Version: 00.09
+// Tue 2026-06-30 BugFix reading the correct version number.                        Version: 00.10
 // -----------------------------------------------------------------------------------------------
 #include "pmake.h"
 
@@ -46,8 +50,8 @@
 // Identity constants (private to pmake)
 // ------------------------------------------------------------
 #define APP_NAME    "pmake"
-#define MAJOR       0
-#define MINOR       6
+#define MAJOR 0
+#define MINOR 10
 
 #define AUTHOR      "Patrik Eigenmann"
 #define EMAIL       "p.eigenmann72@gmail.com"
@@ -242,13 +246,15 @@ Makefile *parse(const char *filename, char **errmsg) {
             mf->comp    = dupstr(line + 5);
             debug_info("Parsed compiler directive as: '%s'\n", mf->comp);
         }
-        else if (strncmp(line, "flags=", 6) == 0) mf->flags = dupstr(line + 6);
-        else if (strncmp(line, "cflags=", 7) == 0) mf->flags = dupstr(line + 7);
-        else if (strncmp(line, "target=", 7) == 0) mf->target  = dupstr(line + 7);
-        else if (strncmp(line, "project=", 8) == 0)mf->project = dupstr(line + 8);
-        else if (strncmp(line, "bin=", 4) == 0)    mf->bin     = dupstr(line + 4);
-        else if (strncmp(line, "src=", 4) == 0)    mf->src     = dupstr(line + 4);
-        else if (strncmp(line, "libs=", 5) == 0)   mf->libs    = dupstr(line + 5);
+        else if (strncmp(line, "flags=", 6) == 0)           mf->flags = dupstr(line + 6);
+        else if (strncmp(line, "cflags=", 7) == 0)          mf->flags = dupstr(line + 7);
+        else if (strncmp(line, "target=", 7) == 0)          mf->target  = dupstr(line + 7);
+        else if (strncmp(line, "project=", 8) == 0)         mf->project = dupstr(line + 8);
+        else if (strncmp(line, "bin=", 4) == 0)             mf->bin     = dupstr(line + 4);
+        else if (strncmp(line, "src=", 4) == 0)             mf->src     = dupstr(line + 4);
+        else if (strncmp(line, "libs=", 5) == 0)            mf->libs    = dupstr(line + 5);
+        // Adding in the os gnosticism field for building the binary name with correct extension.
+        else if (strncmp(line, "is_os_gnostic=", 14) == 0)  mf->os_gnostic = dupstr(line + 14);
     }
 
     fclose(fp);
@@ -320,18 +326,88 @@ void run(const Makefile *mf, char **errmsg) {
         strncat(cmd, " ", 1023 - strlen(cmd));
     }
 
+    // ---------------------------------------------------------------------
+    // Read version from src/<project>.c
+    // ---------------------------------------------------------------------
+    char src_path[256];
+    snprintf(src_path, sizeof(src_path), "src/%s.c", mf->project);
+
+    FILE *vh = fopen(src_path, "r");
+    int vmaj = 0, vmin = 0;
+
+    if (vh) {
+        char buf[256];
+        while (fgets(buf, sizeof(buf), vh)) {
+            if (sscanf(buf, "#define MAJOR %d", &vmaj) == 1) continue;
+            if (sscanf(buf, "#define MINOR %d", &vmin) == 1) continue;
+        }
+        fclose(vh);
+    }
+
+    char version_suffix[32];
+    snprintf(version_suffix, sizeof(version_suffix), "_v%02d.%02d", vmaj, vmin);
+
     strncat(cmd, "-o ", 1023 - strlen(cmd));
     strncat(cmd, mf->bin, 1023 - strlen(cmd));
     strncat(cmd, "/", 1023 - strlen(cmd));
     strncat(cmd, mf->project, 1023 - strlen(cmd));
 
+    // Check if the build has to be OS gnostic.
+    int os_gnostic = 0;
+    if (mf->os_gnostic &&
+        (strcmp(mf->os_gnostic, "on") == 0 ||
+        strcmp(mf->os_gnostic, "1") == 0))
+    {
+        os_gnostic = 1;
+    }
+
+    // Building the os suffix for the binary name.
+    char os_suffix[16];
+    os_suffix[0] = '\0';   // default: empty (OS-neutral)
+
+    // Apply the os-specific suffix only if the pmakefile explicitly requests it.
+    if (os_gnostic) {
+    #ifdef _WIN32
+        strcpy(os_suffix, "_win");
+    #elif __APPLE__
+        strcpy(os_suffix, "_mac");
+    #else
+        strcpy(os_suffix, "_linux");
+    #endif
+    }
+
+    // Append the OS suffix to the output binary name if applicable. This ensures that builds
+    // targeting different operation systems produce uniquely named artifacts.
+    strncat(cmd, os_suffix, 1023 - strlen(cmd));
+
+    // Append version suffix to the output binary name. This ensures that each build
+    // produces a uniquely named artifact, allowing multiple versions to coexist.
+    strncat(cmd, version_suffix, 1023 - strlen(cmd));
+
+// ---------------------------------------------------------------------
+// Append correct extension based on OS and target type
+// ---------------------------------------------------------------------
 #ifdef _WIN32
-    if (strcmp(mf->target, "lib") == 0)       strncat(cmd, ".dll", 1023 - strlen(cmd));
-    else if (strcmp(mf->target, "obj") == 0)  strncat(cmd, ".obj", 1023 - strlen(cmd));
-    else                                      strncat(cmd, ".exe", 1023 - strlen(cmd));
-#else
-    if (strcmp(mf->target, "lib") == 0)       strncat(cmd, ".so", 1023 - strlen(cmd));
-    else if (strcmp(mf->target, "obj") == 0)  strncat(cmd, ".o", 1023 - strlen(cmd));
+    if (strcmp(mf->target, "lib") == 0)
+        strncat(cmd, ".dll", 1023 - strlen(cmd));
+    else if (strcmp(mf->target, "obj") == 0)
+        strncat(cmd, ".obj", 1023 - strlen(cmd));
+    else
+        strncat(cmd, ".exe", 1023 - strlen(cmd));
+
+#elif __APPLE__
+    if (strcmp(mf->target, "lib") == 0)
+        strncat(cmd, ".dylib", 1023 - strlen(cmd));
+    else if (strcmp(mf->target, "obj") == 0)
+        strncat(cmd, ".o", 1023 - strlen(cmd));
+    // executables on macOS have no extension
+
+#else   // Linux / Unix
+    if (strcmp(mf->target, "lib") == 0)
+        strncat(cmd, ".so", 1023 - strlen(cmd));
+    else if (strcmp(mf->target, "obj") == 0)
+        strncat(cmd, ".o", 1023 - strlen(cmd));
+    // executables on Linux have no extension
 #endif
 
     printf("Compiling:\n%s\n", cmd);
